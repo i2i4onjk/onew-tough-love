@@ -13,7 +13,7 @@ const ALBUM_INFO = {
   artist: "온유 ONEW",
   title: "5TH EP 'TOUGH LOVE'",
   releaseDate: "2026.03.09",
-  infoImageUrl: "https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=1000&auto=format&fit=crop", 
+  infoImageUrl: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg", 
   coverImage: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg"
 };
 
