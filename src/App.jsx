@@ -14,8 +14,8 @@ const ALBUM_INFO = {
   
   // [!] 슬라이드로 보여줄 이미지 목록
   infoImages: [
-    "https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=1000&auto=format&fit=crop", 
-    "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=1000&auto=format&fit=crop",
+    "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg", 
+    "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg",
     "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg"
   ],
   
