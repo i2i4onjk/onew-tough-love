@@ -2,9 +2,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Filter, ExternalLink, Heart, Clock, Truck, Gift, ChevronDown, Check, Info, List, Star, LayoutGrid, ArrowRightCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 
 /**
- * 앨범 공구 안내 앱 (최종 수정본 v19)
- * - "옆으로 스크롤" -> "옆으로 넘겨보기 →" 로 텍스트 변경 (상단 특전, 하단 표 모두)
- * - 안내 문구(* 공구 정보는...) 왼쪽 정렬(text-left)로 복구
+ * 앨범 공구 안내 앱 (최종 수정본 v24)
+ * - 리스트 카드 디자인 재수정:
+ * 1. 배지 위치: 이름 옆 -> 이름 아래로 이동 (줄바꿈)
+ * 2. 간격 복구: 이름/가격박스 간격 (mb-2 -> mb-3)
+ * 3. 배지 사이즈: 작게 유지 (text-[9px])
+ * 4. 공구특전 상세 내용 들여쓰기 유지
  */
 
 const ALBUM_INFO = {
@@ -31,15 +34,14 @@ const SHOPS_DATA = [
     endDate: "2026-03-09T17:00:00", 
     benefitImage: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg",
     goBenefit: "포토카드 2종\n카라비너 1종",
-    goBenefitDetail: "포카(사첵 ver.) 2종 \n 카라비너(찡냥이 ver.)",
+    goBenefitDetail: "포카(사첵 ver.) 2종 중 랜덤 1종\n카라비너(찡냥이 ver.) - 5장 이상 구매 시 1개",
     shopBenefit: "미공포 2종",
     price_jewel: "₩14,900",
     price_percent: "₩27,400",
-    price_photobook: "₩23,300\n(세트 ₩46,600)",
-    price_digipack: "₩13,600\n(세트 ₩27,200)",
+    price_photobook: "₩23,300",
+    price_digipack: "₩13,600",
     price_donation: "₩13,000",
     shipping: "3만원 이상 무료",
-    tags: ["미공포", "공구특전"]
   },
   {
     id: 2,
@@ -49,7 +51,7 @@ const SHOPS_DATA = [
     endDate: "2026-03-08T23:59:00",
     benefitImage: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg",
     goBenefit: "포토카드 2종\n카라비너 1종",
-    goBenefitDetail: "포카(착장1 ver.) 2종 / 카라비너(찡먹이 ver.)",
+    goBenefitDetail: "포카(착장1 ver.) 2종 중 랜덤 1종\n카라비너(찡먹이 ver.) - 5장 이상 구매 시 1개",
     shopBenefit: "미공포 2종",
     price_jewel: "₩15,000",
     price_percent: "₩27,600",
@@ -57,7 +59,6 @@ const SHOPS_DATA = [
     price_digipack: "₩13,800",
     price_donation: "-",
     shipping: "2만원 이상 무료",
-    tags: ["미공포", "공구특전"]
   },
   {
     id: 3,
@@ -67,15 +68,14 @@ const SHOPS_DATA = [
     endDate: "2026-03-08T23:59:00",
     benefitImage: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg",
     goBenefit: "포토카드 2종\n카라비너 1종",
-    goBenefitDetail: "포카(착장2 ver.) 2종 / 카라비너(롭냥이 ver.)",
+    goBenefitDetail: "포카(착장2 ver.) 2종 중 랜덤 1종\n카라비너(롭냥이 ver.) - 5장 이상 구매 시 1개",
     shopBenefit: "미공포 2종",
     price_jewel: "₩14,800",
     price_percent: "₩28,200",
-    price_photobook: "₩24,100\n(세트 ₩48,000)",
-    price_digipack: "₩13,500\n(세트 ₩26,800)",
+    price_photobook: "₩24,100",
+    price_digipack: "₩13,500",
     price_donation: "₩13,000",
     shipping: "2만원 이상 무료",
-    tags: ["미공포", "공구특전"]
   },
   {
     id: 4,
@@ -85,7 +85,7 @@ const SHOPS_DATA = [
     endDate: "2026-03-08T23:59:00",
     benefitImage: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg",
     goBenefit: "포토카드 2종\n카라비너 1종",
-    goBenefitDetail: "포카(앵콜 ver.) 2종 / 카라비너(늘어나용 ver.)",
+    goBenefitDetail: "포카(앵콜 ver.) 2종 중 랜덤 1종\n카라비너(늘어나용 ver.) - 5장 이상 구매 시 1개",
     shopBenefit: "미공포 2종",
     price_jewel: "-",
     price_percent: "-",
@@ -93,7 +93,6 @@ const SHOPS_DATA = [
     price_digipack: "₩13,200",
     price_donation: "-",
     shipping: "5만원 이상 무료",
-    tags: ["미공포", "공구특전"]
   },
   {
     id: 5,
@@ -111,7 +110,6 @@ const SHOPS_DATA = [
     price_digipack: "-",
     price_donation: "-",
     shipping: "국내 배송비 무료",
-    tags: ["메이크스타", "무료배송"]
   }
 ];
 
@@ -142,12 +140,6 @@ const TABLE_ROWS = [
   { label: "DIGIPACK(기부)", key: "price_donation" },
   { label: "배송비", key: "shipping" },
 ];
-
-const Badge = ({ text }) => (
-  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] bg-gray-100 text-gray-500 font-bold border border-gray-200 uppercase">
-    {text}
-  </span>
-);
 
 // 리스트의 각 공구처 박스
 const ShopCard = ({ shop, isFavorite, toggleFavorite, elementId, isHighlighted }) => {
@@ -183,18 +175,28 @@ const ShopCard = ({ shop, isFavorite, toggleFavorite, elementId, isHighlighted }
       id={elementId} // 스크롤 타겟 ID
       className={`bg-white rounded-[1.5rem] shadow-sm border border-gray-100 p-5 mb-4 transition-all duration-500 ${isHighlighted ? 'ring-2 ring-[#86A5DC] scale-[1.02]' : 'hover:shadow-md'}`}
     >
-      <div className="flex justify-between items-start mb-3">
+      <div className="flex justify-between items-start mb-3"> {/* 간격 복구: mb-2 -> mb-3 */}
         <div>
-          <h3 className="font-bold text-lg text-gray-900 flex items-center gap-2 leading-none">
+          <h3 className="font-bold text-lg text-gray-900 leading-none">
             {shop.name}
-            {shop.goBenefit !== "-" && (
-              <span className="bg-[#86A5DC]/15 text-[#86A5DC] text-[10px] px-2 py-0.5 rounded-full font-bold">공구특전</span>
-            )}
           </h3>
+          
+          {/* 배지 영역: 이름 아래로 내림 */}
           <div className="flex flex-wrap gap-1 mt-2">
-            {shop.tags.map((tag, idx) => <Badge key={idx} text={`#${tag}`} />)}
+            {/* 미공포 배지: #D5A2A1 (더스티 핑크) */}
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] bg-[#D5A2A1]/15 text-[#D5A2A1] font-bold border border-[#D5A2A1]/20 uppercase">
+              미공포
+            </span>
+            
+            {/* 공구특전 배지: #86A5DC (블루) */}
+            {shop.goBenefit !== "-" && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] bg-[#86A5DC]/15 text-[#86A5DC] font-bold border border-[#86A5DC]/20 uppercase">
+                공구특전
+              </span>
+            )}
           </div>
         </div>
+        
         <button 
           onClick={() => toggleFavorite(shop.id)} 
           className={`p-2.5 rounded-full transition-colors ${isFavorite ? 'text-[#86A5DC] bg-[#86A5DC]/15' : 'text-gray-200 bg-gray-50'}`}
@@ -219,15 +221,20 @@ const ShopCard = ({ shop, isFavorite, toggleFavorite, elementId, isHighlighted }
       </div>
 
       <div className="space-y-2 mb-4">
+        {/* 예판 특전 */}
         <div className="flex items-start gap-2">
           <Gift size={15} className="text-gray-400 mt-0.5 shrink-0" />
           <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap"><span className="font-bold text-gray-500">예판특전:</span> {shop.shopBenefit}</p>
         </div>
         
+        {/* 공구 특전: 라벨과 내용 분리 + 들여쓰기 적용 */}
         {shop.goBenefit !== "-" && (
           <div className="flex items-start gap-2">
             <Star size={15} className="text-[#86A5DC] mt-0.5 shrink-0" />
-            <p className="text-xs text-gray-700 leading-relaxed"><span className="font-bold text-[#86A5DC]">공구특전:</span> {shop.goBenefitDetail || shop.goBenefit}</p>
+            <div className="flex gap-1 text-xs text-gray-700 leading-relaxed">
+               <span className="font-bold text-[#86A5DC] shrink-0">공구특전:</span>
+               <span className="whitespace-pre-wrap">{shop.goBenefitDetail || shop.goBenefit}</span>
+            </div>
           </div>
         )}
       </div>
@@ -389,11 +396,7 @@ export default function App() {
             <div className="space-y-4 animate-in fade-in duration-300">
               
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                 {/* 상단 텍스트 "옆으로 넘겨보기" 적용 */}
-                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 font-bold text-sm text-gray-800 flex justify-between items-center">
-                    <span>💝 공구 특전</span>
-                    <span className="text-[10px] text-[#86A5DC] font-bold animate-pulse">옆으로 넘겨보기 →</span>
-                 </div>
+                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 font-bold text-sm text-gray-800">💝 공구 특전</div>
                  
                  {/* 이미지 슬라이더 영역 */}
                  <div className="relative group">
@@ -435,7 +438,6 @@ export default function App() {
                  </div>
               </div>
 
-              {/* 정렬을 왼쪽(text-left)으로 복구 */}
               <p className="text-left text-[11px] text-gray-400 font-medium px-4">
                 * 공구 정보는 실시간으로 업데이트됩니다.
               </p>
@@ -443,7 +445,6 @@ export default function App() {
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 font-bold text-sm text-gray-800 flex justify-between items-center">
                   <span>💰 상세 가격 비교</span>
-                  {/* 텍스트 변경: 옆으로 넘겨보기 → */}
                   <span className="text-[10px] text-[#86A5DC] font-bold animate-pulse">옆으로 넘겨보기 →</span>
                 </div>
                 <div className="overflow-x-auto pb-3 custom-scrollbar">
@@ -541,6 +542,7 @@ export default function App() {
         </div>
 
         <div className="p-4 text-center text-[10px] text-gray-300 font-bold tracking-widest uppercase border-t border-gray-100 bg-white">
+          THE TIME WE L♥VE<br />
           © 2026 피치 @__I2I4
         </div>
       </div>
