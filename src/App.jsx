@@ -1,19 +1,24 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, Filter, ExternalLink, Heart, Clock, Truck, Gift, ChevronDown, Check, Info, List, Star, LayoutGrid, ArrowRightCircle } from 'lucide-react';
+import { Search, Filter, ExternalLink, Heart, Clock, Truck, Gift, ChevronDown, Check, Info, List, Star, LayoutGrid, ArrowRightCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 
 /**
- * 앨범 공구 안내 앱 (표 최저가 배경 강조 v16)
- * - 가격 비교표 업데이트:
- * 1. 최저가 항목(isLowest)에 배경색(bg-[#86A5DC]/10) 추가 (공구 특전과 동일)
- * 2. 최저가 텍스트는 font-black(가장 굵게) 및 진한 회색(text-gray-900) 적용
- * 3. 표 최소 너비(min-w)를 700px로 늘려 배송비 칸 줄바꿈 방지
+ * 앨범 공구 안내 앱 (최종 수정본 v19)
+ * - "옆으로 스크롤" -> "옆으로 넘겨보기 →" 로 텍스트 변경 (상단 특전, 하단 표 모두)
+ * - 안내 문구(* 공구 정보는...) 왼쪽 정렬(text-left)로 복구
  */
 
 const ALBUM_INFO = {
   artist: "온유 ONEW",
   title: "5TH EP 'TOUGH LOVE'",
   releaseDate: "2026.03.09",
-  infoImageUrl: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg", 
+  
+  // [!] 슬라이드로 보여줄 이미지 목록
+  infoImages: [
+    "https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=1000&auto=format&fit=crop", 
+    "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=1000&auto=format&fit=crop",
+    "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg"
+  ],
+  
   coverImage: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg"
 };
 
@@ -255,6 +260,7 @@ const GalleryCard = ({ shop, onNavigate }) => {
         <span className="font-bold text-sm text-gray-900 truncate">{shop.name}</span>
         <ArrowRightCircle size={16} className="text-gray-300" />
       </div>
+      {/* 1:1 정방형 비율 (aspect-square) */}
       <div className="aspect-square bg-gray-50 rounded-xl overflow-hidden relative border border-gray-100">
          <img src={shop.benefitImage} className="w-full h-full object-cover" alt={`${shop.name} 특전`} />
       </div>
@@ -265,7 +271,10 @@ const GalleryCard = ({ shop, onNavigate }) => {
 export default function App() {
   const [activeTab, setActiveTab] = useState('info');
   const [favorites, setFavorites] = useState([]);
-  const [targetShopId, setTargetShopId] = useState(null); // 스크롤 이동을 위한 타겟 ID
+  const [targetShopId, setTargetShopId] = useState(null);
+  
+  // 이미지 슬라이더를 위한 상태
+  const [currentImgIdx, setCurrentImgIdx] = useState(0);
 
   useEffect(() => {
     const saved = localStorage.getItem('album_mate_favs');
@@ -285,10 +294,12 @@ export default function App() {
   // 리스트 탭으로 변경되었을 때 스크롤 이동 처리
   useEffect(() => {
     if (activeTab === 'list' && targetShopId) {
+      // 약간의 지연을 주어 탭 전환 애니메이션 후 스크롤
       setTimeout(() => {
         const element = document.getElementById(`shop-${targetShopId}`);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // 하이라이트 효과를 위해 잠시 후 타겟 해제
           setTimeout(() => setTargetShopId(null), 2000);
         }
       }, 100);
@@ -297,6 +308,14 @@ export default function App() {
 
   const toggleFavorite = (id) => {
     setFavorites(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
+  };
+
+  // 슬라이더 이전/다음 함수
+  const nextSlide = () => {
+    setCurrentImgIdx((prev) => (prev + 1) % ALBUM_INFO.infoImages.length);
+  };
+  const prevSlide = () => {
+    setCurrentImgIdx((prev) => (prev - 1 + ALBUM_INFO.infoImages.length) % ALBUM_INFO.infoImages.length);
   };
 
   const filteredData = useMemo(() => {
@@ -370,13 +389,61 @@ export default function App() {
             <div className="space-y-4 animate-in fade-in duration-300">
               
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 font-bold text-sm text-gray-800">☑️ 공지 사항</div>
-                 <img src={ALBUM_INFO.infoImageUrl} alt="Info" className="w-full h-auto" />
+                 {/* 상단 텍스트 "옆으로 넘겨보기" 적용 */}
+                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 font-bold text-sm text-gray-800 flex justify-between items-center">
+                    <span>💝 공구 특전</span>
+                    <span className="text-[10px] text-[#86A5DC] font-bold animate-pulse">옆으로 넘겨보기 →</span>
+                 </div>
+                 
+                 {/* 이미지 슬라이더 영역 */}
+                 <div className="relative group">
+                    {/* 비율을 정방형(aspect-square)으로 변경 */}
+                    <div className="aspect-square bg-gray-100 overflow-hidden">
+                      <img 
+                        src={ALBUM_INFO.infoImages[currentImgIdx]} 
+                        alt={`Info ${currentImgIdx + 1}`} 
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                    
+                    {/* 이전 버튼 */}
+                    <button 
+                      onClick={prevSlide}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-1.5 rounded-full shadow-md text-gray-800 hover:bg-white active:scale-95 transition-all opacity-0 group-hover:opacity-100"
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
+                    
+                    {/* 다음 버튼 */}
+                    <button 
+                      onClick={nextSlide}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-1.5 rounded-full shadow-md text-gray-800 hover:bg-white active:scale-95 transition-all opacity-0 group-hover:opacity-100"
+                    >
+                      <ChevronRight size={20} />
+                    </button>
+
+                    {/* 하단 점(Indicator) */}
+                    <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+                      {ALBUM_INFO.infoImages.map((_, idx) => (
+                        <div 
+                          key={idx}
+                          onClick={() => setCurrentImgIdx(idx)}
+                          className={`w-1.5 h-1.5 rounded-full cursor-pointer transition-all ${idx === currentImgIdx ? 'bg-[#86A5DC] w-3' : 'bg-gray-300'}`}
+                        />
+                      ))}
+                    </div>
+                 </div>
               </div>
+
+              {/* 정렬을 왼쪽(text-left)으로 복구 */}
+              <p className="text-left text-[11px] text-gray-400 font-medium px-4">
+                * 공구 정보는 실시간으로 업데이트됩니다.
+              </p>
 
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 font-bold text-sm text-gray-800 flex justify-between items-center">
                   <span>💰 상세 가격 비교</span>
+                  {/* 텍스트 변경: 옆으로 넘겨보기 → */}
                   <span className="text-[10px] text-[#86A5DC] font-bold animate-pulse">옆으로 넘겨보기 →</span>
                 </div>
                 <div className="overflow-x-auto pb-3 custom-scrollbar">
@@ -398,13 +465,9 @@ export default function App() {
                             {row.label}
                           </td>
                           {SHOPS_DATA.map(shop => {
-                            // 가격 행인지 확인
                             const isPriceRow = row.key.startsWith('price_');
-                            // 가격 추출 및 최저가 비교
                             const priceVal = getPriceValue(shop[row.key]);
                             const isLowest = isPriceRow && priceVal !== Infinity && priceVal === MIN_PRICES[row.key];
-                            
-                            // 하이라이트 조건: (공구특전 행이고 값이 있는 경우) OR (최저가인 경우)
                             const isHighlightCell = (row.highlight && shop[row.key] !== '-') || isLowest;
 
                             return (
