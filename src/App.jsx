@@ -31,7 +31,7 @@ const SHOPS_DATA = [
     endDate: "2026-03-09T17:00:00", 
     benefitImage: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg",
     goBenefit: "포토카드 2종\n카라비너 1종",
-    goBenefitDetail: "포카(사첵 ver.) 2종 / 카라비너(찡냥이 ver.)",
+    goBenefitDetail: "포카(사첵 ver.) 2종 \n 카라비너(찡냥이 ver.)",
     shopBenefit: "미공포 2종",
     price_jewel: "₩14,900",
     price_percent: "₩27,400",
