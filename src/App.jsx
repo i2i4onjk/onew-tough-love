@@ -119,7 +119,7 @@ const SHOPS_DATA = [
   {
     id: 5,
     name: "SOUNDWAVE",
-    visible: true,
+    visible: false,
     links: [
       { label: "구매 페이지 바로가기", url: "http://www.sound-wave.co.kr" }
     ],
