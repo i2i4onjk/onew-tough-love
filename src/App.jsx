@@ -118,7 +118,7 @@ const SHOPS_DATA = [
     price_towel: "₩19,600",
     price_towel_set: "₩39,100",
     shipping: "5만원 이상 무료",
-    tags: ["최저가"] 
+    tags: [] 
   },
   {
     id: 5,
