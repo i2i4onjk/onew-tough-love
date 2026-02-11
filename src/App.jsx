@@ -2,10 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Filter, ExternalLink, Heart, Clock, Truck, Gift, ChevronDown, Check, Info, List, Star, LayoutGrid, ArrowRightCircle, ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 /**
- * 앨범 공구 안내 앱 (오류 수정 및 안전 모드 적용 v32)
- * - 공구 특전 박스 헤더에 "옆으로 넘겨보기 →" 추가 (가격 비교표와 동일한 스타일)
- * - 마지막 줄에 누락된 닫는 중괄호 '}' 추가 (Syntax Error 해결)
- * - 흰 화면 오류 방지: 로컬 스토리지 불러오기(JSON.parse)에 안전장치(try-catch) 적용
+ * 앨범 공구 안내 앱 (최종 통합본 v44)
+ * - 배지 표시 순서 최종 수정: [미공포/최저가] -> [공구특전] -> [GLOBAL]
+ * - Ktown4u의 GLOBAL 배지가 맨 오른쪽으로 이동됨
  */
 
 const ALBUM_INFO = {
@@ -14,9 +13,8 @@ const ALBUM_INFO = {
   releaseDate: "2026.03.09",
   
   infoImages: [
-    "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg", 
-    "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg",
-    "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg"
+    "https://i.postimg.cc/4NJxK3Lm/ateubodeu-1.png", 
+    "https://i.postimg.cc/9FzsN5z4/ateubodeu-3.png",
   ],
   
   coverImage: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg"
@@ -26,122 +24,139 @@ const SHOPS_DATA = [
   {
     id: 1,
     name: "Ktown4u",
+    visible: true,
     links: [
-      { label: "PHOTOBOOK Ver. 구매", url: "https://www.ktown4u.com/events/2026/03/onew_pb" },
-      { label: "DIGIPACK Ver. 구매", url: "https://www.ktown4u.com/events/2026/03/onew_digi" },
-      { label: "통합/세트 구매 페이지", url: "https://www.ktown4u.com" }
+      { label: "KOR", url: "https://kr.ktown4u.com/eventinfo?eve_no=44020814&biz_no=967" },
+      { label: "JP", url: "https://jp.ktown4u.com/eventinfo?eve_no=42668173&biz_no=783" },
+      { label: "GLOBAL", url: "https://www.ktown4u.com/eventinfo?eve_no=44021069&biz_no=220" }
     ],
     period: "~03/09 17:00\n~03/15 20:00",
-    endDate: "2026-03-09T17:00:00", 
-    benefitImage: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg",
-    goBenefit: "포토카드 2종\n카라비너 1종",
+    endDate: "2026-03-09T16:59:59", 
+    benefitImage: "https://i.postimg.cc/VNB4vdrG/IMG_3666.jpg",
+    goBenefit: "포토카드 2종\n선착순 카라비너 1종",
     goBenefitDetail: "포카(사첵 ver.) 2종\n카라비너(찡냥이 ver.) - 5장 이상 구매 시",
     shopBenefit: "미공포 2종",
-    price_jewel: "₩14,900",
-    price_percent: "₩27,400",
-    price_photobook: "₩23,300",
-    price_digipack: "₩13,600",
-    price_donation: "₩13,000",
+    price_note: "₩17,300",
+    price_book: "₩17,300",
+    price_pocket: "₩9,900",
+    price_pocket_donation: "₩9,700", 
+    price_towel: "₩19,800",
+    price_towel_set: "₩39,600",
     shipping: "3만원 이상 무료",
-    tags: ["미공포"] 
+    tags: ["미공포", "GLOBAL"] 
   },
   {
     id: 2,
     name: "HOTTRACKS",
+    visible: true,
     links: [
-      { label: "구매 페이지 바로가기", url: "https://www.hottracks.co.kr" }
+      { label: "구매 페이지 바로가기", url: "https://hottracks.kyobobook.co.kr/groupbuy/detail/ptoug" }
     ],
     period: "~03/08 23:59\n~03/15 18:00",
     endDate: "2026-03-08T23:59:59",
-    benefitImage: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg",
-    goBenefit: "포토카드 2종\n카라비너 1종",
+    benefitImage: "https://i.postimg.cc/HsPTv929/IMG-3668.jpg",
+    goBenefit: "포토카드 2종\n선착순 카라비너 1종",
     goBenefitDetail: "포카(착장1 ver.) 2종\n카라비너(찡먹이 ver.) - 5장 이상 구매 시",
     shopBenefit: "미공포 2종",
-    price_jewel: "₩15,000",
-    price_percent: "₩27,600",
-    price_photobook: "₩23,800",
-    price_digipack: "₩13,800",
-    price_donation: "-",
+    price_note: "₩17,500",
+    price_book: "₩17,500",
+    price_pocket: "₩10,000",
+    price_pocket_donation: "-",
+    price_towel: "₩20,000",
+    price_towel_set: "₩39,400",
     shipping: "2만원 이상 무료",
     tags: ["미공포"]
   },
   {
     id: 3,
     name: "APPLE MUSIC",
+    visible: true,
     links: [
-      { label: "구매 페이지 바로가기", url: "http://www.applemusic.co.kr" }
+      { label: "NOTE Ver.", url: "https://link.gmarket.co.kr/VeGzcBlJgi" },
+      { label: "BOOK Ver.", url: "https://link.gmarket.co.kr/ehyhIgjJgi" },
+      { label: "POCKET BOOK Ver.", url: "https://link.gmarket.co.kr/uD6K2PjJgi" },
+      { label: "TOWEL BOOK Ver.", url: "https://link.gmarket.co.kr/0rXDDllJgi" },
+      { label: "TOWEL BOOK SET Ver.", url: "https://link.gmarket.co.kr/SEsXVOmJgi" },
+      { label: "기부 Ver.", url: "https://link.gmarket.co.kr/KnGPphmJgi" }
     ],
     period: "~03/08 23:59\n~03/15 20:00",
     endDate: "2026-03-08T23:59:59",
-    benefitImage: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg",
-    goBenefit: "포토카드 2종\n카라비너 1종",
+    benefitImage: "https://i.postimg.cc/k5FwGB6Y/IMG_3664.jpg",
+    goBenefit: "포토카드 2종\n선착순 카라비너 1종",
     goBenefitDetail: "포카(착장2 ver.) 2종\n카라비너(롭냥이 ver.) - 5장 이상 구매 시",
     shopBenefit: "미공포 2종",
-    price_jewel: "₩14,800",
-    price_percent: "₩28,200",
-    price_photobook: "₩24,100",
-    price_digipack: "₩13,500",
-    price_donation: "₩13,000",
+    price_note: "₩17,700",
+    price_book: "₩17,700",
+    price_pocket: "₩9,700",
+    price_pocket_donation: "₩9,500",
+    price_towel: "₩20,200",
+    price_towel_set: "₩39,800",
     shipping: "2만원 이상 무료",
     tags: ["미공포"]
   },
   {
     id: 4,
     name: "ALLMD",
+    visible: true,
     links: [
-      { label: "구매 페이지 바로가기", url: "https://www.makestar.co" }
+      { label: "구매 페이지 바로가기", url: "https://m.allmd.com/product/list.html?cate_no=1682" }
     ],
     period: "~03/15 21:00",
-    endDate: "2026-03-15T21:00:00",
+    endDate: "2026-03-15T20:59:59",
     benefitImage: "-", 
-    goBenefit: "포토카드 2종\n카라비너 1종",
+    goBenefit: "포토카드 2종\n선착순 카라비너 1종",
     goBenefitDetail: "포카(앵콜 ver.) 2종\n카라비너(찡즈 ver.) - 5장 이상 구매 시", 
     shopBenefit: "-",
-    price_jewel: "-",
-    price_percent: "-",
-    price_photobook: "세트 ₩47,000",
-    price_digipack: "-",
-    price_donation: "-",
+    price_note: "₩17,200",
+    price_book: "₩17,200",
+    price_pocket: "₩9,700",
+    price_pocket_donation: "₩9,500",
+    price_towel: "₩19,600",
+    price_towel_set: "₩39,100",
     shipping: "5만원 이상 무료",
-    tags: [] 
+    tags: ["최저가"] 
   },
   {
     id: 5,
     name: "SOUNDWAVE",
+    visible: true,
     links: [
       { label: "구매 페이지 바로가기", url: "http://www.sound-wave.co.kr" }
     ],
     period: "~03/08 23:59\n~03/15 18:00",
     endDate: "2026-03-08T23:59:59",
-    benefitImage: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg",
+    benefitImage: "https://i.postimg.cc/0NdZjbM4/IMG_3663.jpg",
     goBenefit: "-",
     goBenefitDetail: "-",
     shopBenefit: "미공포 2종",
-    price_jewel: "-",
-    price_percent: "-",
-    price_photobook: "₩21,500",
-    price_digipack: "₩13,200",
-    price_donation: "-",
+    price_note: "₩16,900",
+    price_book: "₩15,600",
+    price_pocket: "₩8,800",
+    price_pocket_donation: "추후 안내",
+    price_towel: "₩19,000",
+    price_towel_set: "₩38,600",
     shipping: "5만원 이상 무료",
     tags: ["미공포"]
   },
   {
     id: 6,
     name: "MAKESTAR",
+    visible: false, 
     links: [
       { label: "구매 페이지 바로가기", url: "http://www.sound-wave.co.kr" }
     ],
-    period: "~03/08 23:59",
+    period: "오픈 예정",
     endDate: "2026-03-08T23:59:59",
     benefitImage: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg",
     goBenefit: "-",
     goBenefitDetail: "-",
     shopBenefit: "미공포 2종",
-    price_jewel: "-",
-    price_percent: "-",
-    price_photobook: "세트 ₩47,000",
-    price_digipack: "-",
-    price_donation: "-",
+    price_note: "-",
+    price_book: "-",
+    price_pocket: "-",
+    price_pocket_donation: "-",
+    price_towel: "-",
+    price_towel_set: "-",
     shipping: "국내배송비 무료",
     tags: ["미공포"]
   }
@@ -155,23 +170,28 @@ const getPriceValue = (priceStr) => {
   return isNaN(num) ? Infinity : num;
 };
 
+// [중요] 화면에 보여줄 데이터만 필터링 (visible: true인 것만)
+const VISIBLE_SHOPS = SHOPS_DATA.filter(shop => shop.visible);
+
 const MIN_PRICES = {
-  price_jewel: Math.min(...SHOPS_DATA.map(d => getPriceValue(d.price_jewel))),
-  price_percent: Math.min(...SHOPS_DATA.map(d => getPriceValue(d.price_percent))),
-  price_photobook: Math.min(...SHOPS_DATA.map(d => getPriceValue(d.price_photobook))),
-  price_digipack: Math.min(...SHOPS_DATA.map(d => getPriceValue(d.price_digipack))),
-  price_donation: Math.min(...SHOPS_DATA.map(d => getPriceValue(d.price_donation))),
+  price_note: Math.min(...VISIBLE_SHOPS.map(d => getPriceValue(d.price_note))),
+  price_book: Math.min(...VISIBLE_SHOPS.map(d => getPriceValue(d.price_book))),
+  price_pocket: Math.min(...VISIBLE_SHOPS.map(d => getPriceValue(d.price_pocket))),
+  price_pocket_donation: Math.min(...VISIBLE_SHOPS.map(d => getPriceValue(d.price_pocket_donation))),
+  price_towel: Math.min(...VISIBLE_SHOPS.map(d => getPriceValue(d.price_towel))),
+  price_towel_set: Math.min(...VISIBLE_SHOPS.map(d => getPriceValue(d.price_towel_set))),
 };
 
 const TABLE_ROWS = [
   { label: "공구 기간", key: "period" },
   { label: "공구 특전", key: "goBenefit", highlight: true },
   { label: "예판 특전", key: "shopBenefit" },
-  { label: "PHOTOBOOK(2종)", key: "price_photobook" },
-  { label: "DIGIPACK(2종)", key: "price_digipack" },
-  { label: "Jewel Rabbit(1종)", key: "price_jewel" },
-  { label: "PERCENT(1종)", key: "price_percent" },
-  { label: "DIGIPACK(기부)", key: "price_donation" },
+  { label: "NOTE", key: "price_note" },
+  { label: "BOOK", key: "price_book" },
+  { label: "POCKET BOOK", key: "price_pocket" },
+  { label: "TOWEL BOOK", key: "price_towel" },
+  { label: "TOWEL BOOK(SET)", key: "price_towel_set" },
+  { label: "POCKETBOOK(기증)", key: "price_pocket_donation" },
   { label: "배송비", key: "shipping" },
 ];
 
@@ -252,7 +272,7 @@ const ShopCard = ({ shop, isFavorite, toggleFavorite, elementId, isHighlighted, 
           </h3>
           
           <div className="flex flex-wrap gap-1 mt-2">
-            {/* 태그(배지) 렌더링 로직 수정: 높이 고정(h-[16px])으로 수직 중앙 정렬 */}
+            {/* 1. 미공포 / 최저가 배지 먼저 출력 */}
             {shop.tags.map(tag => {
               if (tag === "미공포") {
                 return (
@@ -263,7 +283,7 @@ const ShopCard = ({ shop, isFavorite, toggleFavorite, elementId, isHighlighted, 
               }
               if (tag === "최저가") {
                 return (
-                  <span key={tag} className="inline-flex items-center justify-center h-[16px] px-1.5 rounded-full text-[9px] bg-[#86A5DC]/15 text-[#86A5DC] font-bold border border-[#86A5DC]/20 uppercase">
+                  <span key={tag} className="inline-flex items-center justify-center h-[16px] px-1.5 rounded-full text-[9px] bg-[#D5A2A1]/15 text-[#D5A2A1] font-bold border border-[#D5A2A1]/20 uppercase">
                     최저가
                   </span>
                 );
@@ -271,9 +291,17 @@ const ShopCard = ({ shop, isFavorite, toggleFavorite, elementId, isHighlighted, 
               return null;
             })}
 
+            {/* 2. 공구특전 배지 출력 */}
             {shop.goBenefit !== "-" && (
               <span className="inline-flex items-center justify-center h-[16px] px-1.5 rounded-full text-[9px] bg-[#86A5DC]/15 text-[#86A5DC] font-bold border border-[#86A5DC]/20 uppercase">
                 공구특전
+              </span>
+            )}
+
+            {/* 3. GLOBAL 배지 출력 (맨 마지막) */}
+            {shop.tags.includes("GLOBAL") && (
+              <span className="inline-flex items-center justify-center h-[16px] px-1.5 rounded-full text-[9px] bg-gray-100 text-gray-500 font-bold border border-gray-200 uppercase">
+                GLOBAL
               </span>
             )}
           </div>
@@ -289,10 +317,12 @@ const ShopCard = ({ shop, isFavorite, toggleFavorite, elementId, isHighlighted, 
 
       <div className="bg-gray-50 rounded-xl p-4 mb-3">
          <div className="space-y-1">
-            {renderPriceRow("Photobook", "price_photobook")}
-            {renderPriceRow("Digipack", "price_digipack")}
-            {renderPriceRow("Jewel Rabbit", "price_jewel")}
-            {renderPriceRow("Percent", "price_percent")}
+            {renderPriceRow("NOTE", "price_note")}
+            {renderPriceRow("BOOK", "price_book")}
+            {renderPriceRow("POCKET BOOK", "price_pocket")}
+            {renderPriceRow("TOWEL BOOK", "price_towel")}
+            {renderPriceRow("TOWEL BOOK(SET)", "price_towel_set")}
+            {renderPriceRow("POCKETBOOK(기증)", "price_pocket_donation")}
             {renderPriceRow("DIGIPACK(기부)", "price_donation")}
          </div>
          
@@ -362,7 +392,7 @@ export default function App() {
   const [currentImgIdx, setCurrentImgIdx] = useState(0);
   const [selectedShop, setSelectedShop] = useState(null);
 
-  // [수정] 로컬 스토리지 불러오기 시 에러 방지 (흰 화면 방지)
+  // 로컬 스토리지 불러오기 시 에러 방지
   useEffect(() => {
     try {
       const saved = localStorage.getItem('album_mate_favs');
@@ -371,7 +401,6 @@ export default function App() {
       }
     } catch (e) {
       console.error("Failed to load favorites", e);
-      // 에러 발생 시 초기화하여 앱이 멈추지 않게 함
       localStorage.removeItem('album_mate_favs');
     }
   }, []);
@@ -440,8 +469,8 @@ export default function App() {
   };
 
   const filteredData = useMemo(() => {
-    if (activeTab === 'favorite') return SHOPS_DATA.filter(s => favorites.includes(s.id));
-    return SHOPS_DATA;
+    if (activeTab === 'favorite') return VISIBLE_SHOPS.filter(s => favorites.includes(s.id));
+    return VISIBLE_SHOPS;
   }, [activeTab, favorites]);
 
   return (
@@ -521,10 +550,7 @@ export default function App() {
             <div className="space-y-4 animate-in fade-in duration-300">
               
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 font-bold text-sm text-gray-800 flex justify-between items-center">
-                    <span>💝 공구 특전</span>
-                    <span className="text-[10px] text-[#86A5DC] font-bold animate-pulse">옆으로 넘겨보기 →</span>
-                 </div>
+                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 font-bold text-sm text-gray-800">💝 공구 특전</div>
                  
                  <div 
                     className="relative group"
@@ -576,11 +602,11 @@ export default function App() {
                   <span className="text-[10px] text-[#86A5DC] font-bold animate-pulse">옆으로 넘겨보기 →</span>
                 </div>
                 <div className="overflow-x-auto pb-3 custom-scrollbar">
-                  <table className="w-full text-[11px] text-left border-collapse min-w-[800px]">
+                  <table className="w-full text-[11px] text-left border-collapse min-w-[900px]">
                     <thead>
                       <tr className="bg-gray-100 text-gray-500 border-b border-gray-200">
                         <th className="p-3 font-bold bg-gray-50 sticky left-0 z-10 border-r border-gray-200 w-24 whitespace-nowrap">구분</th>
-                        {SHOPS_DATA.map(shop => (
+                        {VISIBLE_SHOPS.map(shop => (
                           <th key={shop.id} className="p-3 font-bold text-gray-700 min-w-[100px] border-r border-gray-100 last:border-0 whitespace-nowrap">
                             {shop.name}
                           </th>
@@ -593,7 +619,7 @@ export default function App() {
                           <td className="p-3 font-bold bg-gray-50 sticky left-0 z-10 border-r border-gray-200 text-gray-600 whitespace-nowrap">
                             {row.label}
                           </td>
-                          {SHOPS_DATA.map(shop => {
+                          {VISIBLE_SHOPS.map(shop => {
                             const isPriceRow = row.key.startsWith('price_');
                             const priceVal = getPriceValue(shop[row.key]);
                             const isLowest = isPriceRow && priceVal !== Infinity && priceVal === MIN_PRICES[row.key];
@@ -621,7 +647,7 @@ export default function App() {
 
           {activeTab === 'list' && (
             <div className="animate-in slide-in-from-bottom-2 duration-300">
-                {SHOPS_DATA.map(shop => (
+                {VISIBLE_SHOPS.map(shop => (
                   <ShopCard 
                     key={shop.id}
                     elementId={`shop-${shop.id}`} 
@@ -639,7 +665,7 @@ export default function App() {
           {activeTab === 'gallery' && (
             <div className="grid grid-cols-2 gap-3 animate-in slide-in-from-bottom-2 duration-300">
               {/* 특전 이미지가 있는 항목만 필터링하여 표시 */}
-              {SHOPS_DATA.filter(shop => shop.benefitImage && shop.benefitImage !== "-").map(shop => (
+              {VISIBLE_SHOPS.filter(shop => shop.benefitImage && shop.benefitImage !== "-").map(shop => (
                 <GalleryCard 
                   key={shop.id} 
                   shop={shop} 
