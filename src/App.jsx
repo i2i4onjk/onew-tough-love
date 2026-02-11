@@ -550,7 +550,10 @@ export default function App() {
             <div className="space-y-4 animate-in fade-in duration-300">
               
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 font-bold text-sm text-gray-800">💝 공구 특전</div>
+                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 font-bold text-sm text-gray-800 flex justify-between items-center">
+                  <span>💝 공구 특전</span>
+                  <span className="text-[10px] text-[#86A5DC] font-bold animate-pulse">옆으로 넘겨보기 →</span>
+                </div>
                  
                  <div 
                     className="relative group"
