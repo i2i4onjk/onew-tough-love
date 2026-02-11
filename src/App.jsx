@@ -25,6 +25,7 @@ const SHOPS_DATA = [
     id: 1,
     name: "Ktown4u",
     visible: true,
+    isOpen: true,
     links: [
       { label: "KOR", url: "https://kr.ktown4u.com/eventinfo?eve_no=44020814&biz_no=967" },
       { label: "JP", url: "https://jp.ktown4u.com/eventinfo?eve_no=42668173&biz_no=783" },
@@ -49,6 +50,7 @@ const SHOPS_DATA = [
     id: 2,
     name: "HOTTRACKS",
     visible: true,
+    isOpen: true,
     links: [
       { label: "구매 페이지 바로가기", url: "https://hottracks.kyobobook.co.kr/groupbuy/detail/ptoug" }
     ],
@@ -71,6 +73,7 @@ const SHOPS_DATA = [
     id: 3,
     name: "APPLE MUSIC",
     visible: true,
+    isOpen: true,
     links: [
       { label: "NOTE Ver.", url: "https://link.gmarket.co.kr/VeGzcBlJgi" },
       { label: "BOOK Ver.", url: "https://link.gmarket.co.kr/ehyhIgjJgi" },
@@ -98,6 +101,7 @@ const SHOPS_DATA = [
     id: 4,
     name: "ALLMD",
     visible: true,
+    isOpen: true,
     links: [
       { label: "구매 페이지 바로가기", url: "https://m.allmd.com/product/list.html?cate_no=1682" }
     ],
@@ -119,7 +123,8 @@ const SHOPS_DATA = [
   {
     id: 5,
     name: "SOUNDWAVE",
-    visible: false,
+    visible: true,
+    isOpen: false,
     links: [
       { label: "구매 페이지 바로가기", url: "http://www.sound-wave.co.kr" }
     ],
@@ -142,6 +147,7 @@ const SHOPS_DATA = [
     id: 6,
     name: "MAKESTAR",
     visible: false, 
+    isOpen: false,
     links: [
       { label: "구매 페이지 바로가기", url: "http://www.sound-wave.co.kr" }
     ],
@@ -245,13 +251,15 @@ const ShopCard = ({ shop, isFavorite, toggleFavorite, elementId, isHighlighted, 
     return `D-${days}`;
   }, [shop.endDate]);
 
+  const isClosed = shop.isOpen === false;
+
   const renderPriceRow = (label, priceKey) => {
     const priceStr = shop[priceKey];
     if (!priceStr || priceStr === '-') return null;
     const isLowest = getPriceValue(priceStr) === MIN_PRICES[priceKey];
     return (
       <div className="flex justify-between items-start py-1">
-          <span className="text-gray-500 text-[11px] font-bold uppercase tracking-tight pt-0.5 w-28 shrink-0">{label}</span>
+          <span className="text-gray-500 text-[11px] font-bold uppercase tracking-tight pt-0.5 w-36 shrink-0 whitespace-nowrap">{label}</span>
           <span className={`font-bold text-right whitespace-pre-wrap text-sm leading-tight flex-1 ${isLowest ? 'text-[#86A5DC]' : 'text-gray-900'}`}>
             {priceStr}
             {isLowest && <span className="text-[9px] ml-1 align-top text-[#86A5DC] opacity-80">BEST</span>}
@@ -357,10 +365,16 @@ const ShopCard = ({ shop, isFavorite, toggleFavorite, elementId, isHighlighted, 
         </div>
         
         <button 
-          onClick={() => onOpenLinks(shop)}
-          className="flex-1 bg-gray-900 text-white py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-black transition-colors"
+          onClick={() => !isClosed && onOpenLinks(shop)}
+          disabled={isClosed}
+          className={`flex-1 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors ${
+            isClosed 
+              ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+              : 'bg-gray-900 text-white hover:bg-black'
+          }`}
         >
-          구매하기 <ExternalLink size={16} />
+          {isClosed ? "링크 준비중" : "구매하기"}
+          {!isClosed && <ExternalLink size={16} />}
         </button>
       </div>
     </div>
