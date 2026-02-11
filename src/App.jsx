@@ -124,9 +124,13 @@ const SHOPS_DATA = [
     id: 5,
     name: "SOUNDWAVE",
     visible: true,
-    isOpen: false,
+    isOpen: true,
     links: [
-      { label: "구매 페이지 바로가기", url: "http://www.sound-wave.co.kr" }
+      { label: "NOTE Ver.", url: "https://sound-wave.co.kr/surl/P/24896" },
+      { label: "BOOK Ver.", url: "https://sound-wave.co.kr/surl/P/24895" },
+      { label: "POCKET BOOK Ver.", url: "https://sound-wave.co.kr/surl/P/24897" },
+      { label: "TOWEL BOOK Ver.", url: "https://sound-wave.co.kr/surl/P/24898" },
+      { label: "TOWEL BOOK SET Ver.", url: "https://sound-wave.co.kr/surl/P/24899" },
     ],
     period: "~03/08 23:59\n~03/15 18:00",
     endDate: "2026-03-08T23:59:59",
