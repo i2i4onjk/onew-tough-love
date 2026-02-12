@@ -150,14 +150,14 @@ const SHOPS_DATA = [
   {
     id: 6,
     name: "MAKESTAR",
-    visible: false, 
-    isOpen: false,
+    visible: true, 
+    isOpen: true,
     links: [
-      { label: "구매 페이지 바로가기", url: "http://www.sound-wave.co.kr" }
+      { label: "구매 페이지 바로가기", url: "https://www.makestar.com/product/private/UF8xMDMyMV9PTkVXXzE0" }
     ],
-    period: "오픈 예정",
+    period: "~03/08 23:59",
     endDate: "2026-03-08T23:59:59",
-    benefitImage: "https://i.postimg.cc/RVPZdVsm/IMG_3543.jpg",
+    benefitImage: "https://i.postimg.cc/gJswXFqt/IMG-3738.jpg",
     goBenefit: "-",
     goBenefitDetail: "-",
     shopBenefit: "미공포 2종",
@@ -167,6 +167,7 @@ const SHOPS_DATA = [
     price_pocket_donation: "-",
     price_towel: "-",
     price_towel_set: "-",
+    price_notebook: "₩35,400",
     shipping: "국내배송비 무료",
     tags: ["미공포"]
   }
@@ -202,6 +203,7 @@ const TABLE_ROWS = [
   { label: "TOWEL BOOK", key: "price_towel" },
   { label: "TOWEL BOOK(SET)", key: "price_towel_set" },
   { label: "POCKETBOOK(기증)", key: "price_pocket_donation" },
+  { label: "NOTE+BOOK(SET)", key: "price_notebook" },
   { label: "배송비", key: "shipping" },
 ];
 
@@ -335,7 +337,7 @@ const ShopCard = ({ shop, isFavorite, toggleFavorite, elementId, isHighlighted, 
             {renderPriceRow("TOWEL BOOK", "price_towel")}
             {renderPriceRow("TOWEL BOOK(SET)", "price_towel_set")}
             {renderPriceRow("POCKETBOOK(기증)", "price_pocket_donation")}
-            {renderPriceRow("DIGIPACK(기부)", "price_donation")}
+            {renderPriceRow("NOTE+BOOK(SET)", "price_notebook")}
          </div>
          
         <div className="flex justify-between mt-3 pt-3 border-t border-gray-200 text-xs text-gray-400">
