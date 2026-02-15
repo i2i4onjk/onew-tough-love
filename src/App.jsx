@@ -13,7 +13,7 @@ const ALBUM_INFO = {
   releaseDate: "2026.03.09",
   
   infoImages: [
-    "https://i.postimg.cc/4NJxK3Lm/ateubodeu-1.png", 
+    "https://i.postimg.cc/wB24mRnG/ateubodeu-1.png", 
     "https://i.postimg.cc/9FzsN5z4/ateubodeu-3.png",
   ],
   
