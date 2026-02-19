@@ -2,9 +2,10 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Filter, ExternalLink, Heart, Clock, Truck, Gift, ChevronDown, Check, Info, List, Star, LayoutGrid, ArrowRightCircle, ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 /**
- * 앨범 공구 안내 앱 (최종 통합본 v44)
- * - 배지 표시 순서 최종 수정: [미공포/최저가] -> [공구특전] -> [GLOBAL]
- * - Ktown4u의 GLOBAL 배지가 맨 오른쪽으로 이동됨
+ * 앨범 공구 안내 앱 (최종 통합본 v50)
+ * - Ktown4u 공구특전 상세 내용 중 "카라비너..." 부분에 취소선 적용
+ * - 해당 데이터 필드(goBenefitDetail)를 JSX 형태로 변경하여 스타일 적용
+ * - 나머지 기능 및 데이터는 v49와 동일
  */
 
 const ALBUM_INFO = {
@@ -34,8 +35,22 @@ const SHOPS_DATA = [
     period: "~03/09 17:00\n~03/15 20:00",
     endDate: "2026-03-09T16:59:59", 
     benefitImage: "https://i.postimg.cc/VNB4vdrG/IMG_3666.jpg",
-    goBenefit: "포토카드 2종\n선착순 카라비너 1종",
-    goBenefitDetail: "포카(사첵 ver.) 2종\n카라비너(찡냥이 ver.) - 5장 이상 구매 시",
+    // [수정] 카라비너 부분에 취소선(line-through) 및 회색(text-gray-400) 적용
+    goBenefit: (
+      <>
+        포토카드 2종
+        <br />
+        <span className="line-through text-gray-400">선착순 카라비너 1종</span>
+      </>
+    ),
+    // [수정] 리스트 상세 내용에도 취소선 적용
+    goBenefitDetail: (
+      <>
+        포카(사첵 ver.) 2종
+        <br />
+        <span className="line-through text-gray-400">카라비너(찡냥이 ver.) - 5장 이상 구매 시</span>
+      </>
+    ),
     shopBenefit: "미공포 2종",
     price_note: "₩17,300",
     price_book: "₩17,300",
@@ -113,12 +128,12 @@ const SHOPS_DATA = [
     shopBenefit: "-",
     price_note: "₩17,200",
     price_book: "₩17,200",
-    price_pocket: "₩9,700",
+    price_pocket: "₩9,800",
     price_pocket_donation: "₩9,500",
     price_towel: "₩19,600",
     price_towel_set: "₩39,100",
     shipping: "5만원 이상 무료",
-    tags: [] 
+    tags: ["최저가"] 
   },
   {
     id: 5,
@@ -131,6 +146,7 @@ const SHOPS_DATA = [
       { label: "POCKET BOOK Ver.", url: "https://sound-wave.co.kr/surl/P/24897" },
       { label: "TOWEL BOOK Ver.", url: "https://sound-wave.co.kr/surl/P/24898" },
       { label: "TOWEL BOOK SET Ver.", url: "https://sound-wave.co.kr/surl/P/24899" },
+      {label: "기부 Ver.", url: "https://sound-wave.co.kr/surl/P/24968" }
     ],
     period: "~03/08 23:59\n~03/15 18:00",
     endDate: "2026-03-08T23:59:59",
@@ -141,7 +157,7 @@ const SHOPS_DATA = [
     price_note: "₩16,900",
     price_book: "₩15,600",
     price_pocket: "₩8,800",
-    price_pocket_donation: "추후 안내",
+    price_pocket_donation: "₩8,800",
     price_towel: "₩19,000",
     price_towel_set: "₩38,600",
     shipping: "5만원 이상 무료",
@@ -175,7 +191,7 @@ const SHOPS_DATA = [
 
 // --- 최저가 계산 로직 ---
 const getPriceValue = (priceStr) => {
-  if (!priceStr || priceStr === '-') return Infinity;
+  if (typeof priceStr !== 'string' || !priceStr || priceStr === '-') return Infinity;
   const singlePrice = priceStr.split('\n')[0];
   const num = parseInt(singlePrice.replace(/[^0-9]/g, ''), 10);
   return isNaN(num) ? Infinity : num;
@@ -266,8 +282,10 @@ const ShopCard = ({ shop, isFavorite, toggleFavorite, elementId, isHighlighted, 
     return (
       <div className="flex justify-between items-start py-1">
           <span className="text-gray-500 text-[11px] font-bold uppercase tracking-tight pt-0.5 w-36 shrink-0 whitespace-nowrap">{label}</span>
+          {/* [수정] 최저가 색상을 핑크(#D5A2A1) -> 블루(#86A5DC)로 변경 */}
           <span className={`font-bold text-right whitespace-pre-wrap text-sm leading-tight flex-1 ${isLowest ? 'text-[#86A5DC]' : 'text-gray-900'}`}>
             {priceStr}
+            {/* [수정] BEST 태그 색상도 동일하게 변경 */}
             {isLowest && <span className="text-[9px] ml-1 align-top text-[#86A5DC] opacity-80">BEST</span>}
           </span>
       </div>
@@ -302,6 +320,13 @@ const ShopCard = ({ shop, isFavorite, toggleFavorite, elementId, isHighlighted, 
                   </span>
                 );
               }
+              if (tag === "GLOBAL") {
+                return (
+                  <span key={tag} className="inline-flex items-center justify-center h-[16px] px-1.5 rounded-full text-[9px] bg-gray-100 text-gray-500 font-bold border border-gray-200 uppercase">
+                    GLOBAL
+                  </span>
+                );
+              }
               return null;
             })}
 
@@ -309,13 +334,6 @@ const ShopCard = ({ shop, isFavorite, toggleFavorite, elementId, isHighlighted, 
             {shop.goBenefit !== "-" && (
               <span className="inline-flex items-center justify-center h-[16px] px-1.5 rounded-full text-[9px] bg-[#86A5DC]/15 text-[#86A5DC] font-bold border border-[#86A5DC]/20 uppercase">
                 공구특전
-              </span>
-            )}
-
-            {/* 3. GLOBAL 배지 출력 (맨 마지막) */}
-            {shop.tags.includes("GLOBAL") && (
-              <span className="inline-flex items-center justify-center h-[16px] px-1.5 rounded-full text-[9px] bg-gray-100 text-gray-500 font-bold border border-gray-200 uppercase">
-                GLOBAL
               </span>
             )}
           </div>
@@ -571,9 +589,9 @@ export default function App() {
               
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                  <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 font-bold text-sm text-gray-800 flex justify-between items-center">
-                  <span>💝 공구 특전</span>
-                  <span className="text-[10px] text-[#86A5DC] font-bold animate-pulse">옆으로 넘겨보기 →</span>
-                </div>
+                    <span>💝 공구 특전</span>
+                    <span className="text-[10px] text-[#86A5DC] font-bold animate-pulse">옆으로 넘겨보기 →</span>
+                 </div>
                  
                  <div 
                     className="relative group"
@@ -647,6 +665,9 @@ export default function App() {
                             const priceVal = getPriceValue(shop[row.key]);
                             const isLowest = isPriceRow && priceVal !== Infinity && priceVal === MIN_PRICES[row.key];
                             const isHighlightCell = (row.highlight && shop[row.key] !== '-') || isLowest;
+                            
+                            // [수정] JSX 렌더링 지원 (Ktown4u 특전 등)
+                            const cellContent = shop[row.key];
 
                             return (
                               <td 
@@ -655,7 +676,7 @@ export default function App() {
                                   ${isHighlightCell ? 'bg-[#86A5DC]/10 text-gray-900' : 'text-gray-600'} 
                                   ${isLowest ? 'font-black' : (isHighlightCell ? 'font-bold' : '')}`}
                               >
-                                {shop[row.key]}
+                                {cellContent}
                               </td>
                             )
                           })}
