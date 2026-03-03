@@ -152,7 +152,7 @@ const SHOPS_DATA = [
       <>
         포카(앵콜 ver.) 2종
         <br />
-        카라비너(찡냥이 ver.) - 5장 이상 구매 시
+        카라비너(찡즈 ver.) - 5장 이상 구매 시
       </>
     ),
     shopBenefit: "-",
