@@ -72,8 +72,20 @@ const SHOPS_DATA = [
     period: "~03/08 23:59\n~03/15 18:00",
     endDate: "2026-03-08T23:59:59",
     benefitImage: "https://i.postimg.cc/HsPTv929/IMG-3668.jpg",
-    goBenefit: "포토카드 2종\n선착순 카라비너 1종",
-    goBenefitDetail: "포카(착장1 ver.) 2종\n카라비너(찡먹이 ver.) - 5장 이상 구매 시",
+    goBenefit: (
+      <>
+        포토카드 2종
+        <br />
+        <span className="line-through text-gray-400">선착순 카라비너 1종</span>
+      </>
+    ),
+    goBenefitDetail: (
+      <>
+        포카(착장1 ver.) 2종
+        <br />
+        <span className="line-through text-gray-400">카라비너(찡먹이 ver.) - 5장 이상 구매 시</span>
+      </>
+    ),
     shopBenefit: "미공포 2종",
     price_note: "₩17,500",
     price_book: "₩17,500",
@@ -100,8 +112,20 @@ const SHOPS_DATA = [
     period: "~03/08 23:59\n~03/15 20:00",
     endDate: "2026-03-08T23:59:59",
     benefitImage: "https://i.postimg.cc/k5FwGB6Y/IMG_3664.jpg",
-    goBenefit: "포토카드 2종\n선착순 카라비너 1종",
-    goBenefitDetail: "포카(착장2 ver.) 2종\n카라비너(롭냥이 ver.) - 5장 이상 구매 시",
+    goBenefit: (
+      <>
+        포토카드 2종
+        <br />
+        <span className="line-through text-gray-400">선착순 카라비너 1종</span>
+      </>
+    ),
+    goBenefitDetail: (
+      <>
+        포카(착장2 ver.) 2종
+        <br />
+        <span className="line-through text-gray-400">카라비너(롭냥이 ver.) - 5장 이상 구매 시</span>
+      </>
+    ),
     shopBenefit: "미공포 2종",
     price_note: "₩17,700",
     price_book: "₩17,700",
@@ -124,7 +148,13 @@ const SHOPS_DATA = [
     endDate: "2026-03-15T20:59:59",
     benefitImage: "-", 
     goBenefit: "포토카드 2종\n선착순 카라비너 1종",
-    goBenefitDetail: "포카(앵콜 ver.) 2종\n카라비너(찡즈 ver.) - 5장 이상 구매 시", 
+    goBenefitDetail: (
+      <>
+        포카(앵콜 ver.) 2종
+        <br />
+        카라비너(찡냥이 ver.) - 5장 이상 구매 시
+      </>
+    ),
     shopBenefit: "-",
     price_note: "₩17,200",
     price_book: "₩17,200",
