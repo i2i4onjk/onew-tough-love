@@ -33,7 +33,7 @@ const SHOPS_DATA = [
       { label: "GLOBAL", url: "https://www.ktown4u.com/eventinfo?eve_no=44021069&biz_no=220" }
     ],
     period: "~03/09 17:00\n~03/15 20:00",
-    endDate: "2026-03-09T16:59:59", 
+    endDate: "2026-03-15T19:59:59", 
     benefitImage: "https://i.postimg.cc/VNB4vdrG/IMG_3666.jpg",
     // [수정] 카라비너 부분에 취소선(line-through) 및 회색(text-gray-400) 적용
     goBenefit: (
@@ -51,7 +51,11 @@ const SHOPS_DATA = [
         <span className="line-through text-gray-400">카라비너(찡냥이 ver.) - 5장 이상 구매 시</span>
       </>
     ),
-    shopBenefit: "미공포 2종",
+    shopBenefit: (
+      <>
+        <span className="line-through text-gray-400">미공포 2종</span>
+      </>
+    ),
     price_note: "₩17,300",
     price_book: "₩17,300",
     price_pocket: "₩9,900",
@@ -70,7 +74,7 @@ const SHOPS_DATA = [
       { label: "구매 페이지 바로가기", url: "https://hottracks.kyobobook.co.kr/groupbuy/detail/ptoug" }
     ],
     period: "~03/08 23:59\n~03/15 18:00",
-    endDate: "2026-03-08T23:59:59",
+    endDate: "2026-03-15T17:59:59",
     benefitImage: "https://i.postimg.cc/HsPTv929/IMG-3668.jpg",
     goBenefit: (
       <>
@@ -86,7 +90,11 @@ const SHOPS_DATA = [
         <span className="line-through text-gray-400">카라비너(찡먹이 ver.) - 5장 이상 구매 시</span>
       </>
     ),
-    shopBenefit: "미공포 2종",
+    shopBenefit: (
+      <>
+        <span className="line-through text-gray-400">미공포 2종</span>
+      </>
+    ),
     price_note: "₩17,500",
     price_book: "₩17,500",
     price_pocket: "₩10,000",
@@ -110,7 +118,7 @@ const SHOPS_DATA = [
       { label: "기부 Ver.", url: "https://link.gmarket.co.kr/KnGPphmJgi" }
     ],
     period: "~03/08 23:59\n~03/15 20:00",
-    endDate: "2026-03-08T23:59:59",
+    endDate: "2026-03-15T19:59:59",
     benefitImage: "https://i.postimg.cc/k5FwGB6Y/IMG_3664.jpg",
     goBenefit: (
       <>
@@ -183,11 +191,15 @@ const SHOPS_DATA = [
       {label: "기부 Ver.", url: "https://sound-wave.co.kr/surl/P/24968" }
     ],
     period: "~03/08 23:59\n~03/15 18:00",
-    endDate: "2026-03-08T23:59:59",
+    endDate: "2026-03-15T17:59:59",
     benefitImage: "https://i.postimg.cc/0NdZjbM4/IMG_3663.jpg",
     goBenefit: "-",
     goBenefitDetail: "-",
-    shopBenefit: "미공포 2종",
+    shopBenefit: (
+      <>
+        <span className="line-through text-gray-400">미공포 2종</span>
+      </>
+    ),
     price_note: "₩16,900",
     price_book: "₩15,600",
     price_pocket: "₩8,800",
