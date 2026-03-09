@@ -751,6 +751,20 @@ export default function App() {
             </div>
           )}
 
+          {/* 특전 모아보기 갤러리 탭 */}
+          {activeTab === 'gallery' && (
+            <div className="grid grid-cols-2 gap-3 animate-in slide-in-from-bottom-2 duration-300">
+              {/* 특전 이미지가 있는 항목만 필터링하여 표시 */}
+              {VISIBLE_SHOPS.filter(shop => shop.benefitImage && shop.benefitImage !== "-").map(shop => (
+                <GalleryCard 
+                  key={shop.id} 
+                  shop={shop} 
+                  onNavigate={handleNavigateToList}
+                />
+              ))}
+            </div>
+          )}
+
           {activeTab === 'favorite' && (
             <div className="animate-in slide-in-from-bottom-2 duration-300">
               {filteredData.length > 0 ? (
