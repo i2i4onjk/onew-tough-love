@@ -126,7 +126,11 @@ const SHOPS_DATA = [
         <span className="line-through text-gray-400">카라비너(롭냥이 ver.) - 5장 이상 구매 시</span>
       </>
     ),
-    shopBenefit: "미공포 2종",
+    shopBenefit: (
+      <>
+        <span className="line-through text-gray-400">미공포 2종</span>
+      </>
+    ),
     price_note: "₩17,700",
     price_book: "₩17,700",
     price_pocket: "₩9,700",
@@ -196,8 +200,8 @@ const SHOPS_DATA = [
   {
     id: 6,
     name: "MAKESTAR",
-    visible: true, 
-    isOpen: true,
+    visible: false, 
+    isOpen: false,
     links: [
       { label: "구매 페이지 바로가기", url: "https://www.makestar.com/product/private/UF8xMDMyMV9PTkVXXzE0" }
     ],
